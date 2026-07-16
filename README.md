@@ -4,7 +4,7 @@ Plaster is a Python-based desktop utility designed to automate wallpaper rotatio
 
 ## Features
 
-*   **Automated Wallpaper Management:** Keep your desktop fresh with automated rotations based on your directory structure.
+*   **Automated Wallpaper Management:** Keep your Gnome desktop fresh with automated rotations based on your directory structure.
 *   **Theme Integration:** Automatically matches your system theme and generates color palettes.
 *   **OpenRGB Sync:** Sync your hardware lighting to complement your current wallpaper and environment.
 *   **XDG Compliant:** Clean configuration management using standard `~/.config` and `~/.cache` locations.
