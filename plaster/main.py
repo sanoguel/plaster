@@ -403,6 +403,7 @@ class SettingsWindow(Adw.PreferencesWindow):
         if os.path.exists(CONFIG_PATH):
             with open(CONFIG_PATH, 'r') as f:
                 data = json.load(f)
+                self.interval_spin.set_value(data.get("change_interval_minutes", 5))
                 self.mode_switch.set_active(data.get("mode", "auto") == "auto")
                 self.root_dir_entry.set_text(data.get("root_wallpaper_dir", ""))
                 loc = data.get("location", {})
