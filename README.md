@@ -17,9 +17,39 @@ Plaster is a Python-based desktop utility designed to automate wallpaper rotatio
 
 *(Note: The interface dynamically adapts to your system theme.)*
 
-## Installation
+## Requirements & Installation
 
-1. Clone the repository:
+### Prerequisites
+* Python 3.10 or higher
+* GTK 4 / GNOME desktop environment (for runtime configuration)
+
+### Dependencies
+This project relies on the modules listed in `requirements.txt`. Key components include:
+* `requests` - For handling core API interactions.
+* `pygobject` - For native GNOME interface hooks.
+
+### Installation
+
+1. Clone the repository and navigate to the project directory:
    ```bash
-   git clone [https://github.com/Sanoguel/plaster.git](https://github.com/Sanoguel/plaster.git)
+   git clone [https://github.com/sanoguel/plaster.git](https://github.com/sanoguel/plaster.git)
    cd plaster
+   ```
+
+2. Create and activate an isolated virtual environment:
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+
+3. Install all required Python packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. (Optional) Register the application menu shortcut for your user profile:
+   ```bash
+   cp plaster.desktop ~/.local/share/applications/
+   update-desktop-database ~/.local/share/applications
+   ```
+
