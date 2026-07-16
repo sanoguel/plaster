@@ -18,7 +18,7 @@ from gi.repository import Gtk, Adw, Gdk, Gio, GLib
 # Import your custom modules
 from plaster.daynight import get_day_night_status
 from plaster.seasons import get_astronomical_season
-from plaster.config import CONFIG_PATH
+from plaster.config import CONFIG_PATH, ASSETS_DIR, PROJECT_ROOT
 from plaster.resolver import get_wallpaper_directory, resolve_and_update_cache
 from plaster.utils import log_event
 
@@ -165,7 +165,7 @@ class WallpaperApp(Adw.Application):
         self.win.set_default_size(600, 400)
         self.win.set_title("Wallpaper Config")
         
-        icon_path = "/home/lgp/.local/share/icons/hicolor/128x128/apps/plaster.png"
+        icon_path = os.path.join(ASSETS_DIR, 'plaster.png')
         self.win.set_icon_name(icon_path)
         
         # Connect the new close handler

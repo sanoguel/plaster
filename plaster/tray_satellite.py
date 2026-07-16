@@ -1,6 +1,8 @@
 import pystray
 from PIL import Image
 import socket
+import os
+from plaster.config import CONFIG_PATH, ASSETS_DIR, PROJECT_ROOT
 
 def get_thumbnail(file_path):
     try:
@@ -26,7 +28,7 @@ def send_command(command):
 
 def run_tray():
     #image = Image.new('RGB', (64, 64), color=(73, 109, 137))
-    image = get_thumbnail("/home/lgp/.local/share/icons/hicolor/128x128/apps/plaster.png")
+    image = get_thumbnail(os.path.join(ASSETS_DIR, 'plaster.png'))
     
     
     def on_show(icon, item):
