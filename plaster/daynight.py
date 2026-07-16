@@ -1,7 +1,7 @@
 import urllib.request
 import json
 from datetime import datetime
-from config import load_config
+from plaster.config import load_config
 
 def get_day_night_status():
     config = load_config()

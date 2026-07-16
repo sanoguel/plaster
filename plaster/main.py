@@ -1,6 +1,7 @@
 import gi
 import json
 import os
+import sys
 import signal
 import shutil
 import subprocess
@@ -15,11 +16,11 @@ gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw, Gdk, Gio, GLib
 
 # Import your custom modules
-from daynight import get_day_night_status
-from seasons import get_astronomical_season
-from config import CONFIG_PATH
-from resolver import get_wallpaper_directory, resolve_and_update_cache
-from utils import log_event
+from plaster.daynight import get_day_night_status
+from plaster.seasons import get_astronomical_season
+from plaster.config import CONFIG_PATH
+from plaster.resolver import get_wallpaper_directory, resolve_and_update_cache
+from plaster.utils import log_event
 
 CACHE_PATH = os.path.expanduser("~/.cache/plaster/plaster.json")
 LOG_DIR = os.path.expanduser("~/.local/state/plaster")
@@ -187,7 +188,7 @@ class WallpaperApp(Adw.Application):
         #subprocess.Popen(["python3", "tray_satellite.py"])
         
         # Track the tray process for proper cleanup
-        self.tray_process = subprocess.Popen(["python3", "tray_satellite.py"])
+        self.tray_process = subprocess.Popen([sys.executable, "-m", "plaster.tray_satellite"])
     
         # Start a simple thread to listen for the tray's signal
         threading.Thread(target=self.listen_for_tray, daemon=True).start()

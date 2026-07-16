@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plaster"
+version = "0.1.0"
+authors = [
+  { name="Luis F. Perez", email="luisfperezn@gmail.com" },
+]
+description = "A desktop application for wallpaper automation, theme generation, and hardware lighting control."
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["wallpaper", "automation", "lighting", "desktop", "linux"]
+dependencies = [
+    "pygobject",
+    "pystray",
+    "Pillow",
+]
+
+[project.scripts]
+plaster = "plaster.main:main"
+
+[tool.setuptools]
+packages = ["plaster"]

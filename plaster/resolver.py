@@ -5,10 +5,10 @@ import subprocess
 import re
 import time
 from datetime import datetime, timezone
-from seasons import get_astronomical_season
-from daynight import get_day_night_status
-from config import CONFIG_PATH, CACHE_PATH
-from utils import log_event
+from plaster.seasons import get_astronomical_season
+from plaster.daynight import get_day_night_status
+from plaster.config import CONFIG_PATH, CACHE_PATH
+from plaster.utils import log_event
 
 def get_wallpaper_directory(mode="auto"):
     if not os.path.exists(CONFIG_PATH):
