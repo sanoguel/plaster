@@ -13,7 +13,7 @@ Plaster is a Python-based desktop utility designed to automate wallpaper rotatio
 
 | Light Mode | Dark Mode |
 | :---: | :---: |
-| ![Plaster Light Mode](assets/plaster-image.png) | ![Plaster Dark Mode](assets/plaster-image.png) |
+| ![Plaster Light Mode](assets/light-mode.png) | ![Plaster Dark Mode](assets/plaster-image.png) |
 
 *(Note: The interface dynamically adapts to your system theme.)*
 
