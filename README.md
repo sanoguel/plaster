@@ -1,0 +1,1 @@
+The main config file is under ~/.config/plaster/config.json
