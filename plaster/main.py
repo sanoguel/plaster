@@ -333,6 +333,7 @@ class SettingsWindow(Adw.PreferencesWindow):
         
         # 2. Add Mapping Page first so entries exist
         self.add_mapping_page()
+        self.add_special_days_page() # added mapping for special days.
         
         # 3. Setup Settings Page groups...
         group_mode = Adw.PreferencesGroup(title="Mode Settings")
@@ -520,6 +521,94 @@ class SettingsWindow(Adw.PreferencesWindow):
     
             for entry in self.month_entries.values():
                 group.add(entry)
+                
+    def add_special_days_page(self):
+        page = Adw.PreferencesPage(title="Special Days", icon_name="x-office-calendar-symbolic")
+        self.add(page)
+        
+        # Group for adding a new special day
+        group_add = Adw.PreferencesGroup(title="Add New Special Day", description="Define custom wallpapers for specific dates (MM-DD)")
+        page.add(group_add)
+        
+        self.special_name_entry = Adw.EntryRow(title="Event Name (e.g. Anniversary)")
+        group_add.add(self.special_name_entry)
+        
+        self.special_date_entry = Adw.EntryRow(title="Date (MM-DD)")
+        group_add.add(self.special_date_entry)
+        
+        # Path row with file picker button
+        path_row = Adw.ActionRow(title="Wallpaper Path")
+        self.special_path_entry = Adw.EntryRow(title="Path to image or directory")
+        path_btn = Gtk.Button(icon_name="folder-open-symbolic")
+        path_btn.connect("clicked", self.on_special_folder_button_clicked)
+        path_row.add_suffix(self.special_path_entry)
+        path_row.add_suffix(path_btn)
+        group_add.add(path_row)
+        
+        add_btn = Gtk.Button(label="Add Special Day")
+        add_btn.set_margin_top(10)
+        add_btn.set_margin_bottom(10)
+        add_btn.connect("clicked", self.on_add_special_day_clicked)
+        group_add.add(add_btn)
+        
+        # Group for displaying existing special days
+        self.group_list = Adw.PreferencesGroup(title="Configured Special Days")
+        page.add(self.group_list)
+        
+        self.populate_special_days_list()
+
+    def populate_special_days_list(self):
+        # Clear existing rows if reloading
+        # (Optional: keep track of dynamically added rows to clear them cleanly)
+        if os.path.exists(CONFIG_PATH):
+            with open(CONFIG_PATH, 'r') as f:
+                try:
+                    data = json.load(f)
+                    special_days = data.get("special_days", [])
+                    for event in special_days:
+                        row = Adw.ActionRow(
+                            title=f"{event.get('name')} ({event.get('date')})",
+                            subtitle=event.get('wallpaper_path')
+                        )
+                        self.group_list.add(row)
+                except:
+                    pass
+
+    def on_special_folder_button_clicked(self, button):
+        dialog = Gtk.FileChooserNative.new(
+            "Select Special Day Wallpaper",
+            self,
+            Gtk.FileChooserAction.OPEN,
+            "_Open",
+            "_Cancel"
+        )
+        def on_response(dialog, response_id):
+            if response_id == Gtk.ResponseType.ACCEPT:
+                file_path = dialog.get_file().get_path()
+                self.special_path_entry.set_text(file_path)
+            dialog.destroy()
+        dialog.connect("response", on_response)
+        dialog.show()
+
+    def on_add_special_day_clicked(self, button):
+        name = self.special_name_entry.get_text()
+        date_str = self.special_date_entry.get_text()
+        path = self.special_path_entry.get_text()
+        
+        if name and date_str and path:
+            # Import your backend helper function
+            from plaster.special_days import add_special_day
+            add_special_day(name, date_str, path, target="config")
+            
+            # Clear entries and refresh list view
+            self.special_name_entry.set_text("")
+            self.special_date_entry.set_text("")
+            self.special_path_entry.set_text("")
+            
+            # Re-populate list group
+            # (Alternatively, you can append the new Adw.ActionRow directly here)
+            row = Adw.ActionRow(title=f"{name} ({date_str})", subtitle=path)
+            self.group_list.add(row)
         
 app = WallpaperApp()
 app.run(None)

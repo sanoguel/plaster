@@ -5,6 +5,7 @@ import subprocess
 import re
 import time
 from datetime import datetime, timezone
+from plaster.special_days import check_special_days
 from plaster.seasons import get_astronomical_season
 from plaster.daynight import get_day_night_status
 from plaster.config import CONFIG_PATH, CACHE_PATH
@@ -26,6 +27,19 @@ def get_wallpaper_directory(mode="auto"):
     # 1. Determine base path
     target_dir = None
     modal = "🖼️"
+    
+    # Priority 0: Special Days Override (only if mode is auto)
+    if mode == "auto":
+        special_wallpaper = check_special_days()
+        if special_wallpaper:
+            # If special_wallpaper returns a full file path, you can split 
+            # it or return the directory and handle direct file selection.
+            # Assuming special_wallpaper gives a directory or file:
+            if os.path.isfile(special_wallpaper):
+                return os.path.dirname(special_wallpaper), "🥳"
+            elif os.path.isdir(special_wallpaper):
+                return special_wallpaper, "🥳"
+    
     
     # Priority 1: Month
     if mode == "auto":

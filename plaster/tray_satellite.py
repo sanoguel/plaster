@@ -39,7 +39,7 @@ def run_tray():
         icon.stop()
 
     menu = pystray.Menu(
-        pystray.MenuItem("Show", on_show),
+        pystray.MenuItem("Show Plaster", on_show),
         pystray.MenuItem("Quit", on_quit)
     )
     
