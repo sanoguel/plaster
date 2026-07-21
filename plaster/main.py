@@ -28,15 +28,7 @@ LOG_DIR = os.path.expanduser("~/.local/state/plaster")
 LOG_FILE = os.path.join(LOG_DIR, "plaster.log")
 
 class WallpaperApp(Adw.Application):
-    #def log_event(self, message):
-    #    """Standardized method to write events to the log file."""
-    #    os.makedirs(LOG_DIR, exist_ok=True)
-    #    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    #    user = getpass.getuser()
-    #    
-    #    with open(LOG_FILE, "a") as f:
-    #        f.write(f"{timestamp},{user},{message}\n")
-    
+   
     def rotate_wallpaper_callback(self):
         # Simply trigger the resolver, which handles its own logging
         resolve_and_update_cache(mode="auto")
@@ -50,7 +42,7 @@ class WallpaperApp(Adw.Application):
         return shutil.which("openrgb") is not None
     
     def __init__(self):
-        super().__init__(application_id='plaster')
+        super().__init__(application_id='com.github.sanoguel.plaster')
         self.main_box = None
         self.win = None
         self.tray_process = None # Track the child tray process
@@ -87,7 +79,7 @@ class WallpaperApp(Adw.Application):
         # This calls the resolver logic based on your hierarchy
         path, modal_icon = get_wallpaper_directory(mode="auto")
         print(f"Current wallpaper directory: {path}")
-        indicator = Gtk.Image.new_from_icon_name(modal_icon_name)
+        indicator = Gtk.Image.new_from_icon_name(modal_icon)
         return path
 
     def update_cache_status(self):
