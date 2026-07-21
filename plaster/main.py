@@ -21,6 +21,7 @@ from plaster.seasons import get_astronomical_season
 from plaster.config import CONFIG_PATH, ASSETS_DIR, PROJECT_ROOT
 from plaster.resolver import get_wallpaper_directory, resolve_and_update_cache
 from plaster.utils import log_event
+from plaster.log_management import LogManager
 
 CACHE_PATH = os.path.expanduser("~/.cache/plaster/plaster.json")
 LOG_DIR = os.path.expanduser("~/.local/state/plaster")
@@ -39,6 +40,7 @@ class WallpaperApp(Adw.Application):
     def rotate_wallpaper_callback(self):
         # Simply trigger the resolver, which handles its own logging
         resolve_and_update_cache(mode="auto")
+        log_manager.evaluate_and_rotate()
         return True
     
     def is_wal_installed(self):
@@ -201,6 +203,9 @@ class WallpaperApp(Adw.Application):
         
         # Refresh every 300 seconds (5 minutes)
         GLib.timeout_add_seconds(interval_min * 60, self.update_cache_status)
+        
+        # Initialize the Log Management system
+        log_manager = LogManager(log_path=LOG_FILE)
         
     def listen_for_tray(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
