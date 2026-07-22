@@ -54,7 +54,7 @@ def get_wallpaper_directory(mode="auto"):
         season_name = get_astronomical_season()
         target_dir = mapping.get("seasons", {}).get(season_name)
         if target_dir in ("winter", "spring", "summer", "autumn"):
-            match target_dir:
+            match season_name:
                 case "Winter":
                     modal = "❄️"
                 case "Spring":
