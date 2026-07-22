@@ -21,12 +21,18 @@ Plaster is a Python-based desktop utility designed to automate wallpaper rotatio
 
 ### Prerequisites
 * Python 3.10 or higher
+* **pywal** (for color extraction and theme generation)
+* **Pillow** (for image processing)
+* **pystray** (for system tray integration)
 * GTK 4 / GNOME desktop environment (for runtime configuration)
 
 ### Dependencies
 This project relies on the modules listed in `requirements.txt`. Key components include:
 * `requests` - For handling core API interactions.
 * `pygobject` - For native GNOME interface hooks.
+
+### Optional / Hardware-Specific Dependencies
+* **OpenRGB**: Required if you want Plaster to dynamically sync your desktop RGB hardware lighting to your wallpaper's color scheme. (Safely skipped if not present).
 
 ### Installation
 
