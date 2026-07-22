@@ -83,24 +83,20 @@ This project relies on the modules listed in `requirements.txt`. Key components 
 
 1. Clone the repository and navigate to the project directory:
    ```bash
-   git clone [https://github.com/sanoguel/plaster.git](https://github.com/sanoguel/plaster.git)
+   git clone --branch v0.1.0-alpha.1 --depth 1 https://github.com/Sanoguel/Plaster.git plaster-alpha
    cd plaster
    ```
 
-2. Create and activate an isolated virtual environment:
+2. Make the installation script executable:
    ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
+   chmod +x ./install.sh
    ```
 
-3. Install all required Python packages:
+3. Execute the installation script:
    ```bash
-   pip install -r requirements.txt
+   ./install.sh
    ```
 
-4. (Optional) Register the application menu shortcut for your user profile:
-   ```bash
-   cp plaster.desktop ~/.local/share/applications/
-   update-desktop-database ~/.local/share/applications
-   ```
+4. Plaster should now appear in your Gnome applications.
+  
 
