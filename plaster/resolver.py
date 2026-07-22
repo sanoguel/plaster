@@ -136,6 +136,10 @@ def resolve_and_update_cache(mode):
         json.dump(data, f, indent=4)
         
 def sync_rgb_colors():
+    # Skip if openrgb is not installed on the system
+    if not shutil.which("openrgb"):
+        log_event("OpenRGB not found on this system; skipping RGB sync.")
+        return
     colors_file = os.path.expanduser("~/.cache/wal/colors.sh")
     
     # 1. Read the file
