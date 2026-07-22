@@ -211,6 +211,15 @@ class WallpaperApp(Adw.Application):
                     data = conn.recv(1024)
                     if data == b'SHOW_WINDOW':
                         GLib.idle_add(self.win.present)
+                    elif data == b'ROTATE_NOW':
+                        # Load current mode from config to pass into the resolver
+                        config = self.load_config()
+                        mode = config.get("mode", "auto")
+                        
+                        # Re-run resolution calculations and push changes to cache
+                        GLib.idle_add(resolve_and_update_cache, mode)
+                        GLib.idle_add(self.update_cache_status)
+                        GLib.idle_add(self.refresh_ui)
                     elif data == b'QUIT_APP':
                         GLib.idle_add(self.cleanup_and_quit)
 
@@ -422,10 +431,7 @@ class SettingsWindow(Adw.PreferencesWindow):
                     entry.set_text(months.get(month, ""))
     
     def save_settings(self, button):
-        paths = [
-            os.path.expanduser("~/.config/plaster/config.json"),
-            os.path.expanduser("~/.cache/plaster/plaster.json")
-        ]
+        config_path = os.path.expanduser("~/.config/plaster/config.json")
         
         # Determine the mode string based on the switch state
         mode_val = "auto" if self.mode_switch.get_active() else "static"
@@ -435,29 +441,35 @@ class SettingsWindow(Adw.PreferencesWindow):
             "months": {month: entry.get_text() for month, entry in self.month_entries.items()}
         }
 
-        for path in paths:
-            data = {}
-            if os.path.exists(path):
-                with open(path, 'r') as f:
-                    try: data = json.load(f)
-                    except: pass
+        # 1. Save exclusively to the configuration file (Source of Truth)
+        data = {}
+        if os.path.exists(config_path):
+            with open(config_path, 'r') as f:
+                try: data = json.load(f)
+                except: pass
 
-            # Add 'mode' to the dictionary update
-            data.update({
-                "mode": mode_val,
-                "change_interval_minutes": int(self.interval_spin.get_value()),
-                "root_wallpaper_dir": self.root_dir_entry.get_text(),
-                "location": {
-                    "latitude": float(self.lat_entry.get_text() or 0),
-                    "longitude": float(self.lon_entry.get_text() or 0)
-                },
-                "mapping": updated_mapping
-            })
-            
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            with open(path, 'w') as f:
-                json.dump(data, f, indent=4)
+        data.update({
+            "mode": mode_val,
+            "change_interval_minutes": int(self.interval_spin.get_value()),
+            "root_wallpaper_dir": self.root_dir_entry.get_text(),
+            "location": {
+                "latitude": float(self.lat_entry.get_text() or 0),
+                "longitude": float(self.lon_entry.get_text() or 0)
+            },
+            "mapping": updated_mapping
+        })
         
+        os.makedirs(os.path.dirname(config_path), exist_ok=True)
+        with open(config_path, 'w') as f:
+            json.dump(data, f, indent=4)
+            
+        # 2. Explicitly trigger the resolver to calculate and update the cache file properly
+        resolve_and_update_cache(mode=mode_val)
+        
+        # 3. Refresh the main application UI immediately
+        if self.get_transient_for() and hasattr(self.get_transient_for(), 'refresh_ui'):
+            self.get_transient_for().refresh_ui()
+            
         self.close()
     
     def on_folder_button_clicked(self, button):

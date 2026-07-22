@@ -34,12 +34,17 @@ def run_tray():
     def on_show(icon, item):
         send_command('SHOW_WINDOW')
 
+    # New handler for rotating via tray menu
+    def on_rotate(icon, item):
+        send_command('ROTATE_NOW')
+    
     def on_quit(icon, item):
         send_command('QUIT_APP')
         icon.stop()
 
     menu = pystray.Menu(
         pystray.MenuItem("Show Plaster", on_show),
+        pystray.MenuItem("Rotate Wallpaper", on_rotate), # Added option
         pystray.MenuItem("Quit", on_quit)
     )
     
