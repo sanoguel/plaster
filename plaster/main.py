@@ -379,6 +379,22 @@ class SettingsWindow(Adw.PreferencesWindow):
         save_btn.connect("clicked", self.save_settings)
         group_loc.add(save_btn)
 
+    def on_static_folder_button_clicked(self, button):
+        dialog = Gtk.FileChooserNative.new(
+            "Select Static Wallpaper Directory",
+            self,
+            Gtk.FileChooserAction.SELECT_FOLDER,
+            "_Open",
+            "_Cancel"
+        )
+        def on_response(dialog, response_id):
+            if response_id == Gtk.ResponseType.ACCEPT:
+                folder = dialog.get_file().get_path()
+                self.static_dir_entry.set_text(folder)
+            dialog.destroy()
+        dialog.connect("response", on_response)
+        dialog.show()
+    
     def add_mapping_page(self):
         self.season_entries = {
             "Spring": Adw.EntryRow(title="Spring"),
