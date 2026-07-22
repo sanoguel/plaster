@@ -70,15 +70,17 @@ class WallpaperApp(Adw.Application):
         return {"change_interval_minutes": 5} # Default value
     
     def rotate_wallpaper_callback(self):
-        resolve_and_update_cache(mode="auto")
-        # This is your dummy trigger
+        config = self.load_config()
+        current_mode = config.get("mode", "auto")
+        resolve_and_update_cache(mode=current_mode)
         log_event("Rotating wallpaper...")
-        # Add your actual wallpaper changing logic here later
         return True # Return True to keep the timer running
     
     def refresh_wallpaper_path(self):
-        # This calls the resolver logic based on your hierarchy
-        path, modal_icon = get_wallpaper_directory(mode="auto")
+        config = self.load_config()
+        current_mode = config.get("mode", "auto")
+        # This calls the resolver logic based on your active mode
+        path, modal_icon = get_wallpaper_directory(mode=current_mode)
         print(f"Current wallpaper directory: {path}")
         indicator = Gtk.Image.new_from_icon_name(modal_icon)
         return path
@@ -93,15 +95,22 @@ class WallpaperApp(Adw.Application):
                 except json.JSONDecodeError:
                     pass
         
-        # 1. Load the mode from config.json (Default to 'auto')
-        mode = "auto"
+        # 1. Load configuration from the source of truth (config.json)
+        config = {}
         if os.path.exists(CONFIG_PATH):
             with open(CONFIG_PATH, 'r') as f:
                 try:
                     config = json.load(f)
-                    mode = config.get("mode", "auto")
                 except:
                     pass
+        mode = config.get("mode", "auto")
+        #if os.path.exists(CONFIG_PATH):
+        #    with open(CONFIG_PATH, 'r') as f:
+        #        try:
+        #            config = json.load(f)
+        #            mode = config.get("mode", "auto")
+        #        except:
+        #            pass
         
         # 2. Update status info
         data["day_or_night"] = get_day_night_status()
@@ -152,8 +161,10 @@ class WallpaperApp(Adw.Application):
     def do_activate(self):
         # Log the startup
         log_event("Plaster started")
+        config = self.load_config()
+        current_mode = config.get("mode", "auto")
         # Update cache status on startup
-        resolve_and_update_cache(mode="auto")
+        resolve_and_update_cache(mode=current_mode)
         self.update_cache_status()
         
         self.win = Adw.ApplicationWindow(application=self)
@@ -215,10 +226,10 @@ class WallpaperApp(Adw.Application):
                     elif data == b'ROTATE_NOW':
                         # Load current mode from config to pass into the resolver
                         config = self.load_config()
-                        mode = config.get("mode", "auto")
+                        current_mode = config.get("mode", "auto")
                         
                         # Re-run resolution calculations and push changes to cache
-                        GLib.idle_add(resolve_and_update_cache, mode)
+                        GLib.idle_add(resolve_and_update_cache, current_mode)
                         GLib.idle_add(self.update_cache_status)
                         GLib.idle_add(self.refresh_ui)
                     elif data == b'QUIT_APP':

@@ -100,7 +100,27 @@ def apply_wallpaper(file_path):
     except subprocess.CalledProcessError as e:
         log_event(f"Error setting wallpaper: {e}")
     
-def resolve_and_update_cache(mode):
+def resolve_and_update_cache(mode=None):
+    if not mode:
+        if os.path.exists(CONFIG_PATH):
+            with open(CONFIG_PATH, 'r') as f:
+                try:
+                    config = json.load(f)
+                    mode = config.get("mode", "auto")
+                except:
+                    mode = "auto"
+        else:
+            mode = "auto"
+            
+    # Load full config to sync parameters into cache
+    config = {}
+    if os.path.exists(CONFIG_PATH):
+        with open(CONFIG_PATH, 'r') as f:
+            try:
+                config = json.load(f)
+            except:
+                pass
+
     path, modal = get_wallpaper_directory(mode=mode)
     current_time = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
     status = get_day_night_status()
@@ -122,17 +142,32 @@ def resolve_and_update_cache(mode):
     apply_wallpaper(selected_file)
     log_event(f"Wallpaper rotated to: {selected_file}")
     
-    # Load existing cache to preserve other data if necessary
+    # Load existing cache to preserve structure
     data = {}
     if os.path.exists(CACHE_PATH):
         with open(CACHE_PATH, 'r') as f:
             try: data = json.load(f)
             except: pass
             
-    # Update only the relevant keys
-    data.update({"current_wallpaper": selected_file, "modal": modal, "time_of_day": time_of_day, "last_updated": current_time})
+    # Comprehensive update: sync both active rotation results and configuration parameters
+    data.update({
+        "current_wallpaper": selected_file,
+        "current_wallpaper_dir": path,
+        "modal": modal,
+        "time_of_day": time_of_day,
+        "day_or_night": status,
+        "season": get_astronomical_season(),
+        "mode": mode,
+        "change_interval_minutes": config.get("change_interval_minutes", 5),
+        "root_wallpaper_dir": config.get("root_wallpaper_dir", ""),
+        "static_wallpaper_dir": config.get("static_wallpaper_dir", ""),
+        "location": config.get("location", {}),
+        "mapping": config.get("mapping", {}),
+        "last_updated": current_time
+    })
     
-    # Save back
+    # Save back to cache file
+    os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
     with open(CACHE_PATH, 'w') as f:
         json.dump(data, f, indent=4)
         
