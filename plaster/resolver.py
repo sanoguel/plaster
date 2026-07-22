@@ -67,7 +67,7 @@ def get_wallpaper_directory(mode="auto"):
             
     # Priority 3: Static (Used by Auto-fallback or Static Mode)
     if not target_dir:
-        target_dir = mapping.get("static", "")
+        target_dir = mapping.get("static", config.get("static_wallpaper_dir", ""))
         is_static = True
         modal = "📁"
     

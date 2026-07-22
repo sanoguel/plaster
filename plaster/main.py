@@ -353,6 +353,14 @@ class SettingsWindow(Adw.PreferencesWindow):
         row.add_suffix(folder_btn)
         group_mode.add(row)
         
+        static_row = Adw.ActionRow(title="Static Wallpaper Directory")
+        self.static_dir_entry = Adw.EntryRow(title="Path")
+        static_folder_btn = Gtk.Button(icon_name="folder-open-symbolic")
+        static_folder_btn.connect("clicked", self.on_static_folder_button_clicked)
+        static_row.add_suffix(self.static_dir_entry)
+        static_row.add_suffix(static_folder_btn)
+        group_mode.add(static_row)
+        
         adjustment = Gtk.Adjustment(value=5, lower=1, upper=60, step_increment=1, page_increment=5, page_size=0)
         self.interval_spin = Adw.SpinRow(title="Rotation Interval (minutes)", adjustment=adjustment)
         group_mode.add(self.interval_spin)
@@ -414,6 +422,7 @@ class SettingsWindow(Adw.PreferencesWindow):
                 self.interval_spin.set_value(data.get("change_interval_minutes", 5))
                 self.mode_switch.set_active(data.get("mode", "auto") == "auto")
                 self.root_dir_entry.set_text(data.get("root_wallpaper_dir", ""))
+                self.static_dir_entry.set_text(data.get("static_wallpaper_dir", ""))
                 loc = data.get("location", {})
                 self.lat_entry.set_text(str(loc.get("latitude", "")))
                 self.lon_entry.set_text(str(loc.get("longitude", "")))
@@ -452,6 +461,7 @@ class SettingsWindow(Adw.PreferencesWindow):
             "mode": mode_val,
             "change_interval_minutes": int(self.interval_spin.get_value()),
             "root_wallpaper_dir": self.root_dir_entry.get_text(),
+            "static_wallpaper_dir": self.static_dir_entry.get_text(),
             "location": {
                 "latitude": float(self.lat_entry.get_text() or 0),
                 "longitude": float(self.lon_entry.get_text() or 0)
