@@ -72,8 +72,9 @@ def get_wallpaper_directory(mode="auto"):
     
     # 2. Finalize Path
     if not target_dir:
+        target_dir = get_system_default_wallpaper()
         modal = "G"
-        return "/usr/share/backgrounds/gnome/"
+        return target_dir, modal
         
     
     full_path = os.path.join(root, target_dir)
@@ -156,3 +157,25 @@ def sync_rgb_colors():
             log_event(f"OpenRGB command failed: {e}")
     else:
         log_event("ERROR: Could not locate color1 in ~/.cache/wal/colors.sh")
+        
+def get_system_default_wallpaper():
+    try:
+        # Query gsettings for the current GNOME background URI
+        result = subprocess.run(
+            ["gsettings", "get", "org.gnome.desktop.background", "picture-uri"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True
+        )
+        uri = result.stdout.strip().strip("'").strip('"')
+        if uri.startswith("file://"):
+            file_path = uri[7:]
+            if os.path.exists(file_path):
+                return os.path.dirname(file_path)
+    except Exception:
+        pass
+    
+    # Absolute last resort fallback directories if gsettings fails
+    for fallback in ["/usr/share/backgrounds/gnome", "/usr/share/backgrounds"]:
+        if os.path.exists(fallback):
+            return fallback
+            
+    return ""
