@@ -4,6 +4,7 @@ import random
 import subprocess
 import re
 import time
+import shutil
 from datetime import datetime, timezone
 from plaster.special_days import check_special_days
 from plaster.seasons import get_astronomical_season
