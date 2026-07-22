@@ -30,8 +30,9 @@ LOG_FILE = os.path.join(LOG_DIR, "plaster.log")
 class WallpaperApp(Adw.Application):
    
     def rotate_wallpaper_callback(self):
-        # Simply trigger the resolver, which handles its own logging
-        resolve_and_update_cache(mode="auto")
+        config = self.load_config()
+        current_mode = config.get("mode", "auto")
+        resolve_and_update_cache(mode=current_mode)
         log_manager.evaluate_and_rotate()
         return True
     
