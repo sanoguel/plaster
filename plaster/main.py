@@ -182,6 +182,7 @@ class WallpaperApp(Adw.Application):
         #subprocess.Popen(["python3", "tray_satellite.py"])
         
         # Track the tray process for proper cleanup
+        venv_python = os.path.join(os.path.dirname(os.path.abspath(__file__)), "venv", "bin", "python")
         self.tray_process = subprocess.Popen([sys.executable, "-m", "plaster.tray_satellite"])
     
         # Start a simple thread to listen for the tray's signal
