@@ -252,6 +252,9 @@ class WallpaperApp(Adw.Application):
         except:
             data = {"error": "Cache file not found"}
 
+        # Define mode from the cache data so the conditional checks work safely
+        mode = data.get("mode", "auto")
+
         # Left Column
         left_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         left_box.set_size_request(250, -1)
@@ -307,17 +310,41 @@ class WallpaperApp(Adw.Application):
         # Right Column
         right_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         group = Adw.PreferencesGroup(title="Current Parameters")
-        for key, value in data.items():
-            if key not in ["time_of_day", "day_or_night", "modal"]:
-                group.add(Adw.ActionRow(title=key.replace('_', ' ').title(), subtitle=str(value)))
-        right_box.append(group)
         
+        # Add Version row at the top of parameters
+        version_row = Adw.ActionRow(title="Plaster Version", subtitle="v0.1.0-alpha.1")
+        group.add(version_row)
+        
+        # Mode-based parameter filtering
+        if mode == "auto":
+            for key, value in data.items():
+                if key not in ["time_of_day", "day_or_night", "modal", "static_wallpaper_dir"]:
+                    group.add(Adw.ActionRow(title=key.replace('_', ' ').title(), subtitle=str(value)))
+        elif mode == "static":
+            for key, value in data.items():
+                if key not in ["time_of_day", "day_or_night", "modal", "season", "root_wallpaper_dir", "mapping"]:
+                    group.add(Adw.ActionRow(title=key.replace('_', ' ').title(), subtitle=str(value)))
+               
+        right_box.append(group)
+
         spacer = Gtk.Box(); spacer.set_vexpand(True); right_box.append(spacer)
         
+        # Bottom button box for settings and logs
+        bottom_btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        bottom_btn_box.set_halign(Gtk.Align.END)
+        bottom_btn_box.set_margin_bottom(10); bottom_btn_box.set_margin_end(10)
+        
+        logs_button = Gtk.Button(icon_name="text-x-generic-symbolic")
+        logs_button.set_tooltip_text("View Logs")
+        logs_button.connect("clicked", self.on_show_logs_clicked)
+        
         gear_button = Gtk.Button(icon_name="preferences-system-symbolic")
-        gear_button.set_halign(Gtk.Align.END); gear_button.set_margin_bottom(10); gear_button.set_margin_end(10)
+        gear_button.set_tooltip_text("Settings")
         gear_button.connect("clicked", self.on_gear_clicked)
-        right_box.append(gear_button)
+        
+        bottom_btn_box.append(logs_button)
+        bottom_btn_box.append(gear_button)
+        right_box.append(bottom_btn_box)
 
         self.main_box.append(left_box)
         self.main_box.append(Gtk.Separator(orientation=Gtk.Orientation.VERTICAL))
@@ -336,6 +363,16 @@ class WallpaperApp(Adw.Application):
         if self.win:
             self.win.show()
             self.win.present()
+            
+    def on_show_logs_clicked(self, button):
+        if os.path.exists(LOG_FILE):
+            try:
+                subprocess.Popen(["xdg-open", LOG_FILE])
+                log_event("Opened log file in system editor.")
+            except Exception as e:
+                log_event(f"Failed to open log file: {e}")
+        else:
+            log_event("Log file does not exist yet.")
 
 class SettingsWindow(Adw.PreferencesWindow):
     def __init__(self, transient_for):
