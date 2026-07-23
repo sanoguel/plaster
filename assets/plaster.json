@@ -1,5 +1,4 @@
 {
-    "wallpaper_dir": "/home/lgp/Nextcloud/Pictures/Wallpaper/Sailing/Day/",
     "change_interval_minutes": 30,
     "mode": "auto",
     "current_wallpaper": "",
@@ -11,7 +10,7 @@
     "time_of_day": "",
     "season": "",
     "day_or_night": "",
-    "root_wallpaper_dir": "/home/lgp/Nextcloud/Pictures/Wallpaper",
+    "root_wallpaper_dir": "",
     "mapping": {
         "seasons": {
             "Spring": "",

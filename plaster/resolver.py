@@ -36,9 +36,11 @@ def get_wallpaper_directory(mode="auto"):
             # If special_wallpaper returns a full file path, you can split 
             # it or return the directory and handle direct file selection.
             # Assuming special_wallpaper gives a directory or file:
+            status = get_day_night_status()
             if os.path.isfile(special_wallpaper):
                 return os.path.dirname(special_wallpaper), "🥳"
             elif os.path.isdir(special_wallpaper):
+                special_wallpaper = os.path.join(special_wallpaper, status)
                 return special_wallpaper, "🥳"
     
     
