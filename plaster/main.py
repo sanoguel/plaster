@@ -312,7 +312,7 @@ class WallpaperApp(Adw.Application):
         group = Adw.PreferencesGroup(title="Current Parameters")
         
         # Add Version row at the top of parameters
-        version_row = Adw.ActionRow(title="Plaster Version", subtitle="v0.1.0-alpha.6")
+        version_row = Adw.ActionRow(title="Plaster Version", subtitle="v0.1.0-beta.1")
         group.add(version_row)
         
         # Mode-based parameter filtering
