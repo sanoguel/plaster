@@ -18,7 +18,7 @@ from gi.repository import Gtk, Adw, Gdk, Gio, GLib
 # Import your custom modules
 from plaster.daynight import get_day_night_status
 from plaster.seasons import get_astronomical_season
-from plaster.config import CONFIG_PATH, ASSETS_DIR, PROJECT_ROOT
+from plaster.config import CONFIG_PATH, ASSETS_DIR
 from plaster.resolver import get_wallpaper_directory, resolve_and_update_cache
 from plaster.utils import log_event
 from plaster.log_management import LogManager
@@ -312,7 +312,7 @@ class WallpaperApp(Adw.Application):
         group = Adw.PreferencesGroup(title="Current Parameters")
         
         # Add Version row at the top of parameters
-        version_row = Adw.ActionRow(title="Plaster Version", subtitle="v0.1.0-alpha.4")
+        version_row = Adw.ActionRow(title="Plaster Version", subtitle="v0.1.0-alpha.6")
         group.add(version_row)
         
         # Mode-based parameter filtering

@@ -11,8 +11,14 @@ CACHE_DIR = Path(os.path.expanduser("~/.cache/plaster"))
 CONFIG_PATH = CONFIG_DIR / "config.json"
 CACHE_PATH = CACHE_DIR / "plaster.json"
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-ASSETS_DIR = PROJECT_ROOT / 'assets'
+# Determine if we are running from a system install or development tree
+SYSTEM_ASSETS_DIR = Path("/usr/share/plaster/assets")
+LOCAL_ASSETS_DIR = Path(__file__).resolve().parent.parent / 'assets'
+
+if SYSTEM_ASSETS_DIR.exists():
+    ASSETS_DIR = SYSTEM_ASSETS_DIR
+else:
+    ASSETS_DIR = LOCAL_ASSETS_DIR
 
 def get_current_gnome_wallpaper():
     """Queries the current GNOME background wallpaper path."""

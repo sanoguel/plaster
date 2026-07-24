@@ -4,7 +4,7 @@ import socket
 import os
 import dbus
 import time
-from plaster.config import CONFIG_PATH, ASSETS_DIR, PROJECT_ROOT
+from plaster.config import CONFIG_PATH, ASSETS_DIR
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import GLib
 from plaster.utils import log_event
